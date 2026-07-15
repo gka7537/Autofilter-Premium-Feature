@@ -10,6 +10,8 @@ import asyncio
 from datetime import date, datetime
 import pytz
 from aiohttp import web
+import os
+PORT = int(os.environ.get("PORT", 10000))
 from database.ia_filterdb import Media, Media2
 from database.users_chats_db import db
 from info import *
@@ -33,11 +35,20 @@ logging.getLogger("aiohttp").setLevel(logging.ERROR)
 logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 logging.getLogger("pymongo").setLevel(logging.WARNING)
 
+async def web_server():
+    app = web.Application()
+    app.add_routes([web.get('/', lambda r: web.Response(text="Bot is running!"))])
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', PORT)
+    await site.start()
+    
 botStartTime = time.time()
 ppath = "plugins/*.py"
 files = glob.glob(ppath)
 
 async def dreamxbotz_start():
+    await web_server()
     print('\n\nInitalizing DreamxBotz')
     await dreamxbotz.start()
     bot_info = await dreamxbotz.get_me()
