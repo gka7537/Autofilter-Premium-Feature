@@ -853,7 +853,23 @@ async def cb_handler(client: Client, query: CallbackQuery):
         else:
             await query.answer("❌ कोई फाइल नहीं मिली!", show_alert=True)
         return
-        # ... बाकी का कोड
+        
+       elif query.data == "verify_button":
+        # 1. 24 घंटे का टाइमर सेट करें
+            from datetime import datetime, timedelta
+            expiry_time = datetime.now() + timedelta(hours=24)
+        
+        # 2. डेटाबेस में अपडेट करें
+            await db.update_one(
+              {"user_id": query.from_user.id}, 
+              {"$set": {"verified_until": expiry_time}}, 
+              upsert=True
+          )
+        
+        # 3. यूजर को कंफर्मेशन दें और मैसेज हटाएं
+        await query.answer("✅ वेरिफिकेशन सफल! अब आप 24 घंटे तक फाइलें देख सकते हैं।", show_alert=True)
+        await query.message.delete()
+
     if query.data == "close_data":
         try:
             user = query.message.reply_to_message.from_user.id
