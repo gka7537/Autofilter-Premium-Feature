@@ -1798,35 +1798,33 @@ async def _schedule_delete(sent_obj, orig_msg, delay):
         except Exception:
             # ignore scheduling errors
             pass
-    # initialize to avoid NameError if reply_sticker fails
-    m = None # यह लाइन किसी भी फंक्शन के अंदर होनी चाहिए या ग्लोबल
+# initialize to avoid NameError if reply_sticker fails
+m = None
 
-    try:
-        if not spoll:
-            message = msg
-            if message.text.startswith("/"):
-                return
-            # ... बाकी का कोड (ध्यान रहे कि यह सब 'try:' के अंदर है तो 4 स्पेस अंदर होना चाहिए)
-            if re.findall(r"((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
-                return
-            if len(message.text) < 100:
-                message_text = message.text or ""
-                search = message_text.lower()
-
-                stick_id = "CAACAgIAAxkBAAEPhm5o439f8A4sUGO2VcnBFZRRYxAxmQACtCMAAphLKUjeub7NKlvk2TYE"
-                keyboard = InlineKeyboardMarkup(
-                    [
-                         [InlineKeyboardButton(f'🔎 sᴇᴀʀᴄʜɪɴɢ {search}', callback_data="hiding")],
-                         [InlineKeyboardButton("📂 पूरा एल्बम देखें", callback_data=f"send_album#{search}")],
-                         [InlineKeyboardButton("📁 फाइलें भेजें", callback_data=f"sendfiles#{search}")] # अगर आप एडमिन 'SEND ALL' चाहते हैं
-                    ]
-                  )
-                    
-                try:
-                    m = await message.reply_sticker(sticker=stick_id, reply_markup=keyboard)
-                except Exception as e:
-                    logger.exception("reply_sticker failed: %s", e)
-
+try:
+    if not spoll:
+        message = msg
+        if message.text.startswith("/"):
+            return
+        if re.findall(r"(^|/|^|[ ^][^/A-Za-z0-9]*$)", message.text):
+            return
+        if len(message.text) < 100:
+            message_text = message.text or ""
+            search = message_text.lower()
+            
+            stick_id = "CAACAgIAAxkBAAEPhm5o439f8A4sUG02VcnBFZRRYxAxmQACTCMAAphKUjeub7NKeM_8HwQ"
+            keyboard = InlineKeyboardMarkup(
+                [
+                    [InlineKeyboardButton("🔍 SEARCHING", callback_data="hiding")],
+                    [InlineKeyboardButton("📂 पूरा एल्बम देखें", callback_data=f"send_album#{search}")],
+                    [InlineKeyboardButton("📁 फाइलें भेजें", callback_data=f"sendfiles#{search}")]
+                ]
+            )
+            try:
+                m = await message.reply_sticker(stick_id, reply_markup=keyboard)
+            except Exception as e:
+                logger.exception("reply_sticker failed: %s", e)
+                                   
                 find = search.split(" ")
                 search = ""
                 removes = ["in", "upload", "series", "full",
