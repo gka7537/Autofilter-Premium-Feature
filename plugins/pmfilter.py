@@ -1740,22 +1740,35 @@ async def cb_handler(client: Client, query: CallbackQuery):
     await query.answer(MSG_ALRT)
 
 
-async def auto_filter(client, msg, spoll=False):
-    """
-    Core auto_filter logic with timing/debug logging removed.
-    """
-    curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
-    # 1. एडमिन एक्सेस चेक (अगर सिर्फ एडमिन सर्च कर सके)
-    if msg.from_user.id not in ADMINS: 
-        await msg.reply("🚫 फाइल सर्च करने के लिए एडमिन एक्सेस जरूरी है।")
-        return
+  async def auto_filter(client, msg, spoll=False):
+    # 1. एडमिन एक्सेस चेक
+      if msg.from_user.id not in ADMINS:
+        
+        # 2. 24-घंटे का वेरिफिकेशन चेक
+        user = await db.find_one({"user_id": msg.from_user.id})
+        # अगर यूजर नहीं है या टाइम एक्सपायर हो गया है
+        if not user or datetime.now() > user.get("verified_until", datetime.min):
+            # वेरीफाई करने के लिए लिंक भेजें
+            verify_link = await create_verify_link(msg.from_user.id) # यह आपके वेरिफिकेशन मॉड्यूल का फंक्शन है
+            await msg.reply(
+                "❌ **आपका एक्सेस समाप्त हो गया है या आपने वेरीफाई नहीं किया है!**\n\n"
+                "फाइल एक्सेस करने के लिए 24 घंटे का वेरिफिकेशन पूरा करें:\n"
+                f"[यहाँ क्लिक करके वेरीफाई करें]({verify_link})",
+                disable_web_page_preview=True
+            )
+            return
 
-    # 2. 24-घंटे का वेरिफिकेशन चेक
-    user = await db.find_one({"user_id": msg.from_user.id})
-    # मान लें कि डेटाबेस में 'verified_until' नाम की फील्ड है
-    if not user or datetime.now() > user.get("verified_until", datetime.min):
-        await msg.reply("❌ आपका एक्सेस समाप्त हो गया है। कृपया /verify करें।")
-        return
+    # 3. सर्च और एल्बम लॉजिक (अगर वेरिफिकेशन पास हुआ)
+    files = await get_search_results(msg.chat.id, msg.text)
+    
+    if files:
+        # एल्बम बनाना (अधिकतम 10 फाइलें)
+        media_group = [InputMediaDocument(media=f.file_id, caption=f"📂 {f.file_name}") for f in files[:10]]
+        await msg.reply_media_group(media=media_group)
+        await msg.reply_text("✅ परिणाम ऊपर दिए गए हैं!")
+    else:
+        await msg.reply_text("❌ कोई फाइल नहीं मिली।")
+
         
     async def _schedule_delete(sent_obj, orig_msg, delay):
         try:
