@@ -1759,21 +1759,20 @@ async def get_verify_keyboard(verify_link):
 async def auto_filter(client, msg, spoll=False):
     # 1. एडमिन एक्सेस चेक
       if msg.from_user.id not in ADMINS: 
-        # 2. 24-घंटे का वेरिफिकेशन चेक
-        user = await db.find_one({"user_id": msg.from_user.id})
-        # अगर यूजर नहीं है या टाइम एक्सपायर हो गया है
-        if not user or datetime.now() > user.get("verified_until", datetime.min):
-                    # पुराना कोड हटाकर यह नया कोड लगाएं:
-        verify_link = await create_verify_link(msg.from_user.id)
-        # यहाँ 'get_verify_keyboard' फंक्शन का उपयोग करें
-        btn = await get_verify_keyboard(verify_link) 
-        await msg.reply(
+    # 2. 24-घंटे का वेरिफिकेशन चेक
+    user = await db.find_one({"user_id": msg.from_user.id})
+    # अगर यूजर नहीं है या टाइम एक्सपायर हो गया है
+    if not user or datetime.now() > user.get("verified_until", datetime.min):
+        verify_link = await create_verify_link(msg.from_user.id) # यह लाइन 'if' के अंदर (4 स्पेस आगे) होनी चाहिए
+        btn = await get_verify_keyboard(verify_link) # यह भी 4 स्पेस आगे
+        await msg.reply( # यह भी 4 स्पेस आगे
             "❌ **आप वेरीफाई नहीं हैं!**\n\n"
-            "फाइल एक्सेस करने के लिए 24 घंटे का वेरिफिकेशन पूरा करें।",
+            "फाइल एक्सेस करने के लिए 24 घंटे का वेरिफिकेशन पूरा करें.",
             reply_markup=btn,
             disable_web_page_preview=True
         )
-        return
+        return # यह भी 4 स्पेस आगे
+        
      # 3. सर्च और एल्बम लॉजिक (अगर वेरिफिकेशन पास हुआ)
     files = await get_search_results(msg.chat.id, msg.text)
     
