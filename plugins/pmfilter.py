@@ -854,7 +854,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer("❌ कोई फाइल नहीं मिली!", show_alert=True)
         return
         
-           elif query.data == "close_data":
+    elif query.data == "close_data":
         try:
             user = query.message.reply_to_message.from_user.id
         except:
@@ -881,7 +881,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "pages":
         await query.answer("THIS IS PAGES BUTTON 😊")
-
+        
     elif query.data == "hiding":
         await query.answer("ʙᴇᴄᴀᴜsᴇ ᴏғ ʟᴀɢᴛᴇ ғɪʟᴇs ɪɴ ᴅᴀᴛᴀʙᴀsᴇ,🙏\nɪᴛ ᴛᴀᴋᴇꜱ ʟɪᴛᴛʟᴇ ʙɪᴛ ᴛɪᴍᴇ",show_alert=True)
 
