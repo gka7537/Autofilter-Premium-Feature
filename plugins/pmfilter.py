@@ -1733,7 +1733,18 @@ async def auto_filter(client, msg, spoll=False):
     Core auto_filter logic with timing/debug logging removed.
     """
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
+    # 1. एडमिन एक्सेस चेक (अगर सिर्फ एडमिन सर्च कर सके)
+    if msg.from_user.id not in ADMINS: 
+        await msg.reply("🚫 फाइल सर्च करने के लिए एडमिन एक्सेस जरूरी है।")
+        return
 
+    # 2. 24-घंटे का वेरिफिकेशन चेक
+    user = await db.find_one({"user_id": msg.from_user.id})
+    # मान लें कि डेटाबेस में 'verified_until' नाम की फील्ड है
+    if not user or datetime.now() > user.get("verified_until", datetime.min):
+        await msg.reply("❌ आपका एक्सेस समाप्त हो गया है। कृपया /verify करें।")
+        return
+        
     async def _schedule_delete(sent_obj, orig_msg, delay):
         try:
             await asyncio.sleep(delay)
