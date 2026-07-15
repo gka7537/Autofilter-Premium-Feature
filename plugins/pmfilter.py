@@ -1893,6 +1893,9 @@ try:
         ]))
     else:
         await message.reply_text("❌ कोई फाइल नहीं मिली।")
+except Exception as e:
+        logger.exception("auto_filter error: %s", e)
+        return
 
 async def ai_spell_check(chat_id, wrong_name):
     try:
