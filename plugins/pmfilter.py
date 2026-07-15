@@ -17,6 +17,7 @@ from database.users_chats_db import db
 import asyncio
 import re
 import math
+import is_user_verified
 import random
 import pytz
 from datetime import datetime, timedelta
