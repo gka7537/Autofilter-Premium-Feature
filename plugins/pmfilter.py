@@ -1750,8 +1750,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
 
-  from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
   async def get_verify_keyboard(verify_link):
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("✅ यहाँ क्लिक करके वेरीफाई करें", url=verify_link)],
