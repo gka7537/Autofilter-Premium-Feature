@@ -1894,29 +1894,25 @@ try:
     else:
         await message.reply_text("❌ कोई फाइल नहीं मिली।")
     # लाइन 1897: यहाँ से आपका फंक्शन शुरू होता है
-    async def ai_spell_check(chat_id, wrong_name):
-        try:
-            search_results = imdb.search_movie(wrong_name)
-            movie_list = [movie['title'] for movie in search_results]
-
-            if not movie_list:
-                return None
-
-            for _ in range(5):
-                closest_match = process.extractOne(wrong_name, movie_list)
-                if not closest_match or closest_match[1] <= 80:
-                    break
-                movie = closest_match[0]
-                files, _, _ = await get_search_results(chat_id, movie)
-                if files:
-                    return movie
-                movie_list.remove(movie)
-
-        # यहाँ ध्यान दें: except के नीचे वाली दोनों लाइनें आगे की तरफ (Indented) होनी चाहिए
-        except Exception as e:
-            logger.exception("ai_spell_check error: %s", e)
+async def ai_spell_check(chat_id, wrong_name):
+    try:
+        search_results = imdb.search_movie(wrong_name)
+        movie_list = [movie['title'] for movie in search_results]
+        if not movie_list:
             return None
-                    
+        for _ in range(5):
+            closest_match = process.extractOne(wrong_name, movie_list)
+            if not closest_match or closest_match[1] <= 80:
+                break
+            movie = closest_match[0]
+            files, _, _ = await get_search_results(chat_id, movie)
+            if files:
+                return movie
+            movie_list.remove(movie)
+    except Exception as e:
+        logger.exception("ai_spell_check error: %s", e)
+        return None
+                            
 async def advantage_spell_chok(client, message):
     mv_id = message.id
     search = message.text
