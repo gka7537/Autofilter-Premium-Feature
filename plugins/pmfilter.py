@@ -842,6 +842,18 @@ async def cb_handler(client: Client, query: CallbackQuery):
         link = await client.create_chat_invite_link(int(REQST_CHANNEL))
     except:
         pass
+        # यह लाइन 845 के ऊपर पेस्ट करें:
+    if query.data.startswith("send_album"):
+        query_text = query.data.split("#")[1]
+        files = await get_search_results(query.message.chat.id, query_text)
+        if files:
+            media_group = [InputMediaDocument(media=f.file_id, caption=f"**📂 {f.file_name}**") for f in files[:10]]
+            await client.send_media_group(query.message.chat.id, media=media_group)
+            await query.answer("✅ एल्बम भेज दिया गया है!")
+        else:
+            await query.answer("❌ कोई फाइल नहीं मिली!", show_alert=True)
+        return
+        # ... बाकी का कोड
     if query.data == "close_data":
         try:
             user = query.message.reply_to_message.from_user.id
