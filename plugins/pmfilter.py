@@ -1776,8 +1776,13 @@ async def auto_filter(client, msg, spoll=False):
 
                 stick_id = "CAACAgIAAxkBAAEPhm5o439f8A4sUGO2VcnBFZRRYxAxmQACtCMAAphLKUjeub7NKlvk2TYE"
                 keyboard = InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(f'🔎 sᴇᴀʀᴄʜɪɴɢ {search}', callback_data="hiding")]]
-                )
+                    [
+                         [InlineKeyboardButton(f'🔎 sᴇᴀʀᴄʜɪɴɢ {search}', callback_data="hiding")],
+                         [InlineKeyboardButton("📂 पूरा एल्बम देखें", callback_data=f"send_album#{search}")],
+                         [InlineKeyboardButton("📁 फाइलें भेजें", callback_data=f"sendfiles#{search}")] # अगर आप एडमिन 'SEND ALL' चाहते हैं
+                    ]
+                  )
+                    
                 try:
                     m = await message.reply_sticker(sticker=stick_id, reply_markup=keyboard)
                 except Exception as e:
