@@ -854,38 +854,33 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer("❌ कोई फाइल नहीं मिली!", show_alert=True)
         return
         
-       elif query.data == "verify_button":
-        # 1. 24 घंटे का टाइमर सेट करें
-          from datetime import datetime, timedelta
-            expiry_time = datetime.now() + timedelta(hours=24)
-        
-        # 2. डेटाबेस में अपडेट करें
-       await db.update_one(
-              {"user_id": query.from_user.id}, 
-              {"$set": {"verified_until": expiry_time}}, 
-              upsert=True
-          )
-        
-        # 3. यूजर को कंफर्मेशन दें और मैसेज हटाएं
-        await query.answer("✅ वेरिफिकेशन सफल! अब आप 24 घंटे तक फाइलें देख सकते हैं।", show_alert=True)
-        await query.message.delete()
-
-    if query.data == "close_data":
+           elif query.data == "close_data":
         try:
             user = query.message.reply_to_message.from_user.id
         except:
             user = query.from_user.id
         if int(user) != 0 and query.from_user.id != int(user):
             return await query.answer(script.NT_ALRT_TXT, show_alert=True)
-        await query.answer("ᴛʜᴀɴᴋs ꜰᴏʀ ᴄʟᴏsᴇ 🙈")
+        await query.answer("THANKS FOR CLOSE 🙈")
         await query.message.delete()
         try:
             await query.message.reply_to_message.delete()
         except:
             pass
 
+    elif query.data == "verify_button":
+        from datetime import datetime, timedelta
+        expiry_time = datetime.now() + timedelta(hours=24)
+        await db.update_one(
+            {"user_id": query.from_user.id},
+            {"$set": {"verified_until": expiry_time}},
+            upsert=True
+        )
+        await query.answer("✅ वेरिफिकेशन सफल! अब आप 24 घंटे तक फाइलें देख सकते हैं।", show_alert=True)
+        await query.message.delete()
+
     elif query.data == "pages":
-        await query.answer("ᴛʜɪs ɪs ᴘᴀɢᴇs ʙᴜᴛᴛᴏɴ 😅")
+        await query.answer("THIS IS PAGES BUTTON 😊")
 
     elif query.data == "hiding":
         await query.answer("ʙᴇᴄᴀᴜsᴇ ᴏғ ʟᴀɢᴛᴇ ғɪʟᴇs ɪɴ ᴅᴀᴛᴀʙᴀsᴇ,🙏\nɪᴛ ᴛᴀᴋᴇꜱ ʟɪᴛᴛʟᴇ ʙɪᴛ ᴛɪᴍᴇ",show_alert=True)
