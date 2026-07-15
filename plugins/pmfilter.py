@@ -1750,13 +1750,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
 
-  async def get_verify_keyboard(verify_link):
+async def get_verify_keyboard(verify_link):
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("✅ यहाँ क्लिक करके वेरीफाई करें", url=verify_link)],
         [InlineKeyboardButton("🔄 मैं वेरीफाई हो गया हूँ", callback_data="verify_button")]
     ])
-
-  async def auto_filter(client, msg, spoll=False):
+    
+async def auto_filter(client, msg, spoll=False):
     # 1. एडमिन एक्सेस चेक
       if msg.from_user.id not in ADMINS: 
         # 2. 24-घंटे का वेरिफिकेशन चेक
@@ -1786,7 +1786,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await msg.reply_text("❌ कोई फाइल नहीं मिली।")
 
         
-    async def _schedule_delete(sent_obj, orig_msg, delay):
+async def _schedule_delete(sent_obj, orig_msg, delay):
         try:
             await asyncio.sleep(delay)
             try:
