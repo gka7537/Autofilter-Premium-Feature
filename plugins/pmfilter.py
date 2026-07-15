@@ -1912,7 +1912,7 @@ async def ai_spell_check(chat_id, wrong_name):
     except Exception as e:
         logger.exception("ai_spell_check error: %s", e)
         return None
-        
+
 async def advantage_spell_chok(client, message):
     mv_id = message.id
     search = message.text
@@ -1959,3 +1959,4 @@ async def advantage_spell_chok(client, message):
         await message.delete()
     except:
         pass
+        
