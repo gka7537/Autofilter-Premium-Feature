@@ -1916,9 +1916,9 @@ async def ai_spell_check(chat_id, wrong_name):
                 return movie
             movie_list.remove(movie)
     except Exception as e:
-        logger.exception("ai_spell_check failed: %s", e)
+        logger.exception("ai_spell_check error: %s", e)
         return
-                
+        
 async def advantage_spell_chok(client, message):
     mv_id = message.id
     search = message.text
