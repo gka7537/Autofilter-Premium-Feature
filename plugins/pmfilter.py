@@ -1902,19 +1902,23 @@ async def ai_spell_check(chat_id, wrong_name):
         except Exception:
             return []
 
-    movie_list = await search_movie(wrong_name)
-    if not movie_list:
-        return
-    for _ in range(5):
-        closest_match = process.extractOne(wrong_name, movie_list)
-        if not closest_match or closest_match[1] <= 80:
+    try:
+        movie_list = await search_movie(wrong_name)
+        if not movie_list:
             return
-        movie = closest_match[0]
-        files, _, _ = await get_search_results(chat_id, movie)
-        if files:
-            return movie
-        movie_list.remove(movie)
-        
+        for _ in range(5):
+            closest_match = process.extractOne(wrong_name, movie_list)
+            if not closest_match or closest_match[1] <= 80:
+                return
+            movie = closest_match[0]
+            files, _, _ = await get_search_results(chat_id, movie)
+            if files:
+                return movie
+            movie_list.remove(movie)
+    except Exception as e:
+        logger.exception("ai_spell_check failed: %s", e)
+        return
+                
 async def advantage_spell_chok(client, message):
     mv_id = message.id
     search = message.text
