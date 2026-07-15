@@ -1798,15 +1798,15 @@ async def _schedule_delete(sent_obj, orig_msg, delay):
         except Exception:
             # ignore scheduling errors
             pass
-
     # initialize to avoid NameError if reply_sticker fails
-    m = None
+    m = None # यह लाइन किसी भी फंक्शन के अंदर होनी चाहिए या ग्लोबल
 
     try:
         if not spoll:
             message = msg
             if message.text.startswith("/"):
                 return
+            # ... बाकी का कोड (ध्यान रहे कि यह सब 'try:' के अंदर है तो 4 स्पेस अंदर होना चाहिए)
             if re.findall(r"((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
                 return
             if len(message.text) < 100:
