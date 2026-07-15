@@ -1,4 +1,5 @@
-from utils import get_size, is_subscribed, is_req_subscribed, group_setting_buttons, get_poster, get_posterx, temp, get_settings, save_group_settings, get_cap, imdb, is_check_admin, extract_request_content, log_error, clean_filename, generate_season_variations, clean_search_text
+from utils import get_size, is_subscribed, is_req_subscribed, group_setting_buttons, get_
+poster, get_posterx, temp, get_settings, save_group_settings, get_cap, imdb, is_check_admin, extract_request_content, log_error, clean_filename, generate_season_variations, clean_search_text
 import tracemalloc
 from fuzzywuzzy import process
 from dreamxbotz.util.file_properties import get_name, get_hash
@@ -1897,8 +1898,10 @@ async def ai_spell_check(chat_id, wrong_name):
     try:
         search_results = imdb.search_movie(wrong_name)
         movie_list = [movie['title'] for movie in search_results]
+        
         if not movie_list:
             return None
+
         for _ in range(5):
             closest_match = process.extractOne(wrong_name, movie_list)
             if not closest_match or closest_match[1] <= 80:
@@ -1908,6 +1911,7 @@ async def ai_spell_check(chat_id, wrong_name):
             if files:
                 return movie
             movie_list.remove(movie)
+            
     except Exception as e:
         logger.exception("ai_spell_check error: %s", e)
     return None
