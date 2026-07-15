@@ -1841,32 +1841,22 @@ async def auto_filter(client, msg, spoll=False):
         temp.GETALL[key] = files
         temp.SHORT[message.from_user.id] = message.chat.id
 
-        if settings.get('button'):
-            btn = [
-                [
-                    InlineKeyboardButton(text=f"🔗 {get_size(file.file_size)} ≽ " + clean_filename(
-                        file.file_name), callback_data=f'file#{file.file_id}'),
-                ]
-                for file in files
-            ]
-            btn.insert(0,
-                       [
-                           InlineKeyboardButton(
-                               f'Qᴜᴀʟɪᴛʏ', callback_data=f"qualities#{key}"),
-                           InlineKeyboardButton(
-                               "Lᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}"),
-                           InlineKeyboardButton(
-                               "Sᴇᴀsᴏɴ",  callback_data=f"seasons#{key}")
-                       ]
-                       )
-            btn.insert(0,
-                       [
-                           InlineKeyboardButton(
-                               "ʀᴇᴍᴏᴠᴇ ᴀᴅs", url=f"https://t.me/{temp.U_NAME}?start=premium"),
-                           InlineKeyboardButton(
-                               "Sᴇɴᴅ Aʟʟ", callback_data=f"sendfiles#{key}")
+    
+    if files:
+        # 1. पहले सारी फाइलों का एक मीडिया ग्रुप बनाएं (अधिकतम 10 फाइलें)
+        media_group = [InputMediaDocument(media=f.file_id, caption=f"**📂 Name:** {f.file_name}\n**💾 Size:** {get_size(f.file_size)}") for f in files[:10]]
+        
+        # 2. पूरा एल्बम भेजें
+        await message.reply_media_group(media=media_group)
+        
+        
+        await message.reply_text("📂 परिणाम ऊपर दिए गए हैं।", reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("📂 पूरा एल्बम फिर देखें", callback_data=f"send_album#{search}")]
+        ]))
+    else:
+        await message.reply_text("❌ कोई फाइल नहीं मिली।")
 
-                       ])
+        
         else:
             btn = []
             btn.insert(0,
