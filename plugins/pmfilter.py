@@ -1893,7 +1893,7 @@ try:
         ]))
     else:
         await message.reply_text("❌ कोई फाइल नहीं मिली।")
-    # लाइन 1897: यहाँ से आपका फंक्शन शुरू होता है
+
 async def ai_spell_check(chat_id, wrong_name):
     try:
         search_results = imdb.search_movie(wrong_name)
@@ -1912,7 +1912,7 @@ async def ai_spell_check(chat_id, wrong_name):
     except Exception as e:
         logger.exception("ai_spell_check error: %s", e)
         return None
-                            
+        
 async def advantage_spell_chok(client, message):
     mv_id = message.id
     search = message.text
